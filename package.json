@@ -1,0 +1,45 @@
+{
+  "name": "@wgb5445/script-composer-pack",
+  "collaborators": [
+    "Aptos Labs <opensource@aptoslabs.com>"
+  ],
+  "description": "Generating Move Script from composer",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aptos-labs/aptos-core"
+  },
+  "files": [
+    "dist",
+    "main.mts",
+    "tsconfig.json",
+    "tsup.config.ts"
+  ],
+  "module": "dist/esm/main.mjs",
+  "types": "dist/main.d.ts",
+  "homepage": "https://aptoslabs.com",
+  "sideEffects": [
+    "./snippets/*"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-wasm": "^6.2.2",
+    "tsc": "^2.0.4",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "esbuild": "^0.24.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/esm/main.mjs",
+      "default": "./dist/cjs/main.js"
+    }
+  },
+  "scripts": {
+    "build": "npx tsup"
+  },
+  "dependencies": {
+    "@wgb5445/aptos-dynamic-transaction-composer": "^0.1.2"
+  }
+}
