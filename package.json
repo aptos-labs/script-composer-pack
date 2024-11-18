@@ -1,5 +1,5 @@
 {
-  "name": "@wgb5445/script-composer-pack",
+  "name": "@aptos-labs/script-composer-pack",
   "collaborators": [
     "Aptos Labs <opensource@aptoslabs.com>"
   ],
@@ -40,6 +40,6 @@
     "build": "npx tsup"
   },
   "dependencies": {
-    "@wgb5445/aptos-dynamic-transaction-composer": "^0.1.2"
+    "@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.0"
   }
 }
