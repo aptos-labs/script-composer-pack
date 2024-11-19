@@ -4,7 +4,7 @@
     "Aptos Labs <opensource@aptoslabs.com>"
   ],
   "description": "Generating Move Script from composer",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -24,10 +24,10 @@
   ],
   "devDependencies": {
     "@rollup/plugin-wasm": "^6.2.2",
+    "esbuild": "^0.24.0",
     "tsc": "^2.0.4",
     "tsup": "^8.3.5",
-    "typescript": "^5.6.3",
-    "esbuild": "^0.24.0"
+    "typescript": "^5.6.3"
   },
   "exports": {
     ".": {
@@ -40,6 +40,6 @@
     "build": "npx tsup"
   },
   "dependencies": {
-    "@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.0"
+    "@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.1"
   }
 }
