@@ -16,6 +16,7 @@
     "tsconfig.json",
     "tsup.config.ts"
   ],
+  "main": "dist/cjs/main.js",
   "module": "dist/esm/main.mjs",
   "types": "dist/main.d.ts",
   "homepage": "https://aptoslabs.com",
