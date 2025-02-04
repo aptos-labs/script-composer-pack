@@ -47,6 +47,6 @@
     "build": "npx tsup"
   },
   "dependencies": {
-    "@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.2"
+    "@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.3"
   }
 }
