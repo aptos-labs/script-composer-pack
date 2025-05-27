@@ -2,7 +2,8 @@ import { defineConfig } from 'tsup'
 import { Plugin } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
-
+import  *  as  fflate  from  'fflate' ;
+import { Buffer } from "buffer";
 export function wasmLoader():Plugin {
   return {
     name: 'wasm-loader',
@@ -10,9 +11,9 @@ export function wasmLoader():Plugin {
       build.onLoad({ filter: /\.wasm$/ }, async (args) => {
         const wasmPath = path.resolve(args.path);
         const wasmBuffer = await fs.promises.readFile(wasmPath);
+        const wasm = Buffer.from(fflate.zlibSync(wasmBuffer, { level: 9 }));
         const contents = `
-          const wasm = [${new Uint8Array(wasmBuffer).toString()}];
-          export default wasm;
+          export default "${wasm.toString('base64')}";
         `;
         return {
           contents,
@@ -52,6 +53,8 @@ export default defineConfig({
     resolve: true,
   },
   format: ['cjs', 'esm'],
+  treeshake: true,
+  // minify: true, 
   esbuildPlugins: [wasmLoader(), removeURLCodePlugin()],
   esbuildOptions(options, context) {
     if (context.format === 'cjs') {
