@@ -4,7 +4,7 @@
     "Aptos Labs <opensource@aptoslabs.com>"
   ],
   "description": "Generating Move Script from composer",
-  "version": "0.0.9-beta.0",
+  "version": "0.0.9-beta.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
