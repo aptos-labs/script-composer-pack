@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aptos-labs/aptos-dynamic-transaction-composer':
-        specifier: 0.1.3-beta.2
-        version: 0.1.3-beta.2
+        specifier: 0.1.3-beta.3
+        version: 0.1.3-beta.3
     devDependencies:
       '@rollup/plugin-wasm':
         specifier: ^6.2.2
@@ -30,8 +30,8 @@ importers:
 
 packages:
 
-  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.3-beta.2':
-    resolution: {integrity: sha512-2oDBUSKSFJOT2wNpuYgdlHAUVa0rD6WVDL207w1lgqr56/TWQY6hEb8aZiZeMSlOPXLRzdxHfbbgEyx63XR4Kg==}
+  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.3-beta.3':
+    resolution: {integrity: sha512-Jlb3F76kfCWlH4UdLJcInjF8r5xDIPePA+d3R3ocQ+lkxjM+5JPKH8BMODYnDFwjfk3BlbcGJayGP4xA/O133w==}
 
   '@esbuild/aix-ppc64@0.25.5':
     resolution: {integrity: sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA==}
@@ -651,7 +651,7 @@ packages:
 
 snapshots:
 
-  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.3-beta.2': {}
+  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.3-beta.3': {}
 
   '@esbuild/aix-ppc64@0.25.5':
     optional: true
