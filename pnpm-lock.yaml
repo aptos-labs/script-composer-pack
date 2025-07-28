@@ -12,7 +12,7 @@ importers:
         specifier: 0.1.4-0
         version: 0.1.4-0
       '@aptos-labs/ts-sdk':
-        specifier: ^2.0.1
+        specifier: <4.0.0
         version: 2.0.1(got@11.8.6)
     devDependencies:
       '@rollup/plugin-wasm':
