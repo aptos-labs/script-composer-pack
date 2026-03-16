@@ -18,11 +18,11 @@ Options:
   -h, --help      Show help
 
 Examples:
-  pnpm run version:bump patch
-  pnpm run version:bump minor --dry-run
-  pnpm run version:bump prerelease --pre beta
-  pnpm run version:bump 1.4.0
-  pnpm run version:bump patch --file ./packages/foo/package.json`);
+  pnpm run version:bump -- patch
+  pnpm run version:bump -- minor --dry-run
+  pnpm run version:bump -- prerelease --pre beta
+  pnpm run version:bump -- 1.4.0
+  pnpm run version:bump -- patch --file ./packages/foo/package.json`);
 }
 
 function parseArgs(argv) {
