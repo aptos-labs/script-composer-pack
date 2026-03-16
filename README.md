@@ -29,6 +29,9 @@ This repo includes a generic version bump CLI at `scripts/bump-version.mjs`.
 pnpm run version:bump -- <major|minor|patch|prerelease|X.Y.Z> [options]
 ```
 
+`X.Y.Z` uses strict SemVer parsing and supports prerelease/build metadata,
+for example `1.4.0-rc.1` and `1.4.0+build.7`.
+
 ### Options
 
 - `--file <path>`: target `package.json` (default: `./package.json`)

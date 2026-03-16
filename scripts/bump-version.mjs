@@ -3,8 +3,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import semver from "semver";
 
-const VERSION_RE = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?$/;
+const RELEASE_TYPES = new Set(["major", "minor", "patch", "prerelease"]);
 
 function printUsage() {
   console.log(`Usage:
@@ -77,69 +78,50 @@ function parseArgs(argv) {
   return result;
 }
 
-function parseVersion(version) {
-  const match = VERSION_RE.exec(version);
-  if (!match) {
-    throw new Error(`Invalid semver: ${version}`);
+function nextPrereleaseFromCurrent(currentVersion, preid) {
+  const parsed = semver.parse(currentVersion);
+  if (!parsed) {
+    throw new Error(`Invalid semver: ${currentVersion}`);
   }
-  return {
-    major: Number(match[1]),
-    minor: Number(match[2]),
-    patch: Number(match[3]),
-    prerelease: match[4] ?? "",
-  };
-}
 
-function formatVersion({ major, minor, patch, prerelease }) {
-  const base = `${major}.${minor}.${patch}`;
-  return prerelease ? `${base}-${prerelease}` : base;
+  // Keep same base when first entering prerelease mode.
+  if (parsed.prerelease.length === 0) {
+    return `${parsed.major}.${parsed.minor}.${parsed.patch}-${preid}.0`;
+  }
+
+  const next = semver.inc(currentVersion, "prerelease", preid);
+  if (!next) {
+    throw new Error(`Unable to bump prerelease from ${currentVersion}`);
+  }
+  return next;
 }
 
 function bumpFromAction(currentVersion, action, preid) {
-  const next = parseVersion(currentVersion);
+  if (!semver.valid(currentVersion)) {
+    throw new Error(`Invalid semver in package.json: ${currentVersion}`);
+  }
 
-  if (VERSION_RE.test(action)) {
+  const parsedExplicit = semver.parse(action, { loose: false });
+  if (parsedExplicit && parsedExplicit.raw === action) {
     return action;
   }
 
-  switch (action) {
-    case "major":
-      next.major += 1;
-      next.minor = 0;
-      next.patch = 0;
-      next.prerelease = "";
-      return formatVersion(next);
-    case "minor":
-      next.minor += 1;
-      next.patch = 0;
-      next.prerelease = "";
-      return formatVersion(next);
-    case "patch":
-      next.patch += 1;
-      next.prerelease = "";
-      return formatVersion(next);
-    case "prerelease": {
-      const base = `${next.major}.${next.minor}.${next.patch}`;
-      const pre = next.prerelease;
-      if (!pre) {
-        return `${base}-${preid}.0`;
-      }
-
-      const preMatch = /^([0-9A-Za-z-]+)\.(\d+)$/.exec(pre);
-      if (!preMatch) {
-        return `${base}-${preid}.0`;
-      }
-
-      const currentId = preMatch[1];
-      const currentNum = Number(preMatch[2]);
-      if (currentId !== preid) {
-        return `${base}-${preid}.0`;
-      }
-      return `${base}-${preid}.${currentNum + 1}`;
+  if (!RELEASE_TYPES.has(action)) {
+    if (action.includes(".") || action.includes("-") || action.includes("+")) {
+      throw new Error(`Invalid semver: ${action}`);
     }
-    default:
-      throw new Error(`Unsupported action: ${action}`);
+    throw new Error(`Unsupported action: ${action}`);
   }
+
+  if (action === "prerelease") {
+    return nextPrereleaseFromCurrent(currentVersion, preid);
+  }
+
+  const next = semver.inc(currentVersion, action);
+  if (!next) {
+    throw new Error(`Unable to bump ${action} from ${currentVersion}`);
+  }
+  return next;
 }
 
 async function main() {
@@ -156,7 +138,7 @@ async function main() {
     const current = pkg.version;
     const next = bumpFromAction(current, action, preid);
 
-    if (!VERSION_RE.test(next)) {
+    if (!semver.valid(next)) {
       throw new Error(`Result is not a valid semver: ${next}`);
     }
 
