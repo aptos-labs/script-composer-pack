@@ -103,7 +103,10 @@ function bumpFromAction(currentVersion, action, preid) {
 
   const parsedExplicit = semver.parse(action, { loose: false });
   if (parsedExplicit && parsedExplicit.raw === action) {
-    return action;
+    const build = parsedExplicit.build.length
+      ? `+${parsedExplicit.build.join(".")}`
+      : "";
+    return `${parsedExplicit.version}${build}`;
   }
 
   if (!RELEASE_TYPES.has(action)) {
