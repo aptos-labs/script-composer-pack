@@ -4,7 +4,7 @@
     "Aptos Labs <opensource@aptoslabs.com>"
   ],
   "description": "Generating Move Script from composer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "buffer": "6.0.3",
     "esbuild": "0.25.4",
     "fflate": "0.8.2",
+    "semver": "^7.7.4",
     "tsc": "2.0.4",
     "tsup": "8.4.0",
     "typescript": "5.8.3"
@@ -48,10 +49,11 @@
   },
   "scripts": {
     "build": "npx tsup",
+    "version:bump": "node ./scripts/bump-version.mjs",
     "prepublish": "pnpm build"
   },
   "peerDependencies": {
-    "@aptos-labs/ts-sdk": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0",
-    "@aptos-labs/aptos-dynamic-transaction-composer": "0.1.5"
+    "@aptos-labs/aptos-dynamic-transaction-composer": "0.1.5",
+    "@aptos-labs/ts-sdk": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0"
   }
 }
