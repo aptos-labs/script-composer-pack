@@ -1,0 +1,26 @@
+---
+description: Script Composer Pack project conventions and TypeScript usage
+globs: "**/*.{ts,mts,js,mjs}"
+alwaysApply: false
+---
+
+# Script Composer Pack Project Rules
+
+## Purpose
+
+This repo is `@aptos-labs/script-composer-pack`. It generates Move script payloads from `@aptos-labs/aptos-dynamic-transaction-composer` for use with the Aptos TS SDK.
+
+## Versioning & Release
+
+- Change the version only via `pnpm run version:bump -- <major|minor|patch|X.Y.Z>`. Do not edit `package.json`'s `version` by hand.
+- Release flow: new branch → version:bump → `pnpm build` → commit → push → open PR.
+
+## TypeScript / Build
+
+- Entry point: `main.mts`. Build output goes to `dist/` (CJS + ESM).
+- Keep in sync with `tsconfig.json` and `tsup.config.ts`. When adding exports, update `package.json`'s `exports` and `files`.
+
+## Dependencies
+
+- Do not upgrade or change peer dependency version ranges unless there is a clear need.
+- Code that uses WASM / Buffer must be acceptable in both browser and Node environments (currently handled via fflate + buffer).
