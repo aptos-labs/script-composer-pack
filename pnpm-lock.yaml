@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aptos-labs/aptos-dynamic-transaction-composer':
-        specifier: 0.1.5
-        version: 0.1.5
+        specifier: ^0.1.6
+        version: 0.1.6
       '@aptos-labs/ts-sdk':
         specifier: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
         version: 6.2.0(got@11.8.6)
@@ -55,8 +55,8 @@ packages:
     peerDependencies:
       got: ^11.8.6
 
-  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.5':
-    resolution: {integrity: sha512-Xs8BSCcL4hnpYONFC2e2Kj/vqvMVJU9l70vN0RNMagYLsvyiyNgUo55I+5uCrhIgj68bgxFsSoKUh/XDpDqRiw==}
+  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.6':
+    resolution: {integrity: sha512-reIq7g/J02nRT6XILCX51zA9n7n0lwxZQB56fVaE2D3WB5Lt6qgw71ITlt2mvng/x/r8gY7bYyyUhKAx4hMuBw==}
 
   '@aptos-labs/ts-sdk@6.2.0':
     resolution: {integrity: sha512-DXzftTnIONrerI1X2Gfc/OFwrUoMXIKjDuupBuU0F67W5wrq9xyM5qB6Q89Biub6A3M3Y4kS96x84VH5CN2anA==}
@@ -861,7 +861,7 @@ snapshots:
     dependencies:
       got: 11.8.6
 
-  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.5': {}
+  '@aptos-labs/aptos-dynamic-transaction-composer@0.1.6': {}
 
   '@aptos-labs/ts-sdk@6.2.0(got@11.8.6)':
     dependencies:
