@@ -44,7 +44,7 @@
 				"types": "./dist/main.d.mts",
 				"default": "./dist/esm/main.mjs"
 			},
-			"default": {
+			"require": {
 				"types": "./dist/main.d.mts",
 				"default": "./dist/cjs/main.js"
 			}
@@ -55,7 +55,7 @@
 		"lint": "biome check .",
 		"test": "vitest run",
 		"version:bump": "node ./scripts/bump-version.mjs",
-		"prepublish": "pnpm build"
+		"prepublishOnly": "pnpm build"
 	},
 	"peerDependencies": {
 		"@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.6",

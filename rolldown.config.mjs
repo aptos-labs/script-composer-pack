@@ -24,7 +24,7 @@ function removeURLPlugin() {
 	return {
 		name: "remove-url-code",
 		transform(code, id) {
-			if (!id.endsWith(".js")) return;
+			if (!id.endsWith(".js") && !id.endsWith(".mjs")) return;
 			const newCode = code.replace(
 				/if \(typeof module_or_path === 'undefined'\) \{\s*module_or_path = new URL\('aptos_dynamic_transaction_composer_bg\.wasm', import\.meta\.url\);\s*\}/g,
 				"",
