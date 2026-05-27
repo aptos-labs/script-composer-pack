@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Allow first-party @aptos-labs/* packages through safe-chain age check
+        run: echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
+      - name: Setup AikidoSec Safe Chain
+        uses: aptos-labs/actions/aikidosec-safe-chain@fdd3a3a628c840d5c35086a87e9cc3141b635505 # pin@main
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Allow first-party @aptos-labs/* packages through safe-chain age check
+        run: echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
+      - name: Setup AikidoSec Safe Chain
+        uses: aptos-labs/actions/aikidosec-safe-chain@fdd3a3a628c840d5c35086a87e9cc3141b635505 # pin@main
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Allow first-party @aptos-labs/* packages through safe-chain age check
+        run: echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
+      - name: Setup AikidoSec Safe Chain
+        uses: aptos-labs/actions/aikidosec-safe-chain@fdd3a3a628c840d5c35086a87e9cc3141b635505 # pin@main
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test

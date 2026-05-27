@@ -1,59 +1,64 @@
 {
-  "name": "@aptos-labs/script-composer-pack",
-  "collaborators": [
-    "Aptos Labs <opensource@aptoslabs.com>"
-  ],
-  "description": "Generating Move Script from composer",
-  "version": "0.2.3",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aptos-labs/aptos-core"
-  },
-  "files": [
-    "dist",
-    "main.mts",
-    "tsconfig.json",
-    "tsup.config.ts"
-  ],
-  "main": "dist/cjs/main.js",
-  "module": "dist/esm/main.mjs",
-  "types": "dist/main.d.ts",
-  "homepage": "https://aptoslabs.com",
-  "sideEffects": [
-    "./snippets/*"
-  ],
-  "devDependencies": {
-    "@rollup/plugin-wasm": "6.2.2",
-    "@types/node": "^22.15.17",
-    "buffer": "6.0.3",
-    "esbuild": "0.25.4",
-    "fflate": "0.8.2",
-    "semver": "^7.7.4",
-    "tsc": "2.0.4",
-    "tsup": "8.4.0",
-    "typescript": "5.8.3"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/main.d.ts",
-      "import": {
-        "types": "./dist/main.d.mts",
-        "default": "./dist/esm/main.mjs"
-      },
-      "default": {
-        "types": "./dist/main.d.ts",
-        "default": "./dist/cjs/main.js"
-      }
-    }
-  },
-  "scripts": {
-    "build": "npx tsup",
-    "version:bump": "node ./scripts/bump-version.mjs",
-    "prepublish": "pnpm build"
-  },
-  "peerDependencies": {
-    "@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.6",
-    "@aptos-labs/ts-sdk": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0"
-  }
+	"name": "@aptos-labs/script-composer-pack",
+	"collaborators": [
+		"Aptos Labs <opensource@aptoslabs.com>"
+	],
+	"packageManager": "pnpm@11.1.1",
+	"engines": {
+		"node": ">=22"
+	},
+	"description": "Generating Move Script from composer",
+	"version": "0.3.0",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/aptos-labs/aptos-core"
+	},
+	"files": [
+		"dist",
+		"main.mts",
+		"tsconfig.json",
+		"rolldown.config.mjs"
+	],
+	"main": "dist/cjs/main.js",
+	"module": "dist/esm/main.mjs",
+	"types": "dist/main.d.mts",
+	"homepage": "https://aptoslabs.com",
+	"sideEffects": [
+		"./snippets/*"
+	],
+	"devDependencies": {
+		"@biomejs/biome": "2.4.15",
+		"@types/node": "22.15.17",
+		"buffer": "6.0.3",
+		"fflate": "0.8.3",
+		"rolldown": "1.0.2",
+		"semver": "7.7.4",
+		"typescript": "6.0.3",
+		"vitest": "4.1.7"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/main.d.mts",
+			"import": {
+				"types": "./dist/main.d.mts",
+				"default": "./dist/esm/main.mjs"
+			},
+			"default": {
+				"types": "./dist/main.d.mts",
+				"default": "./dist/cjs/main.js"
+			}
+		}
+	},
+	"scripts": {
+		"build": "rm -rf dist && rolldown -c && tsc -p tsconfig.declarations.json",
+		"lint": "biome check .",
+		"test": "vitest run",
+		"version:bump": "node ./scripts/bump-version.mjs",
+		"prepublish": "pnpm build"
+	},
+	"peerDependencies": {
+		"@aptos-labs/aptos-dynamic-transaction-composer": "^0.1.6",
+		"@aptos-labs/ts-sdk": "^7.1.0 || ^6.3.1"
+	}
 }
