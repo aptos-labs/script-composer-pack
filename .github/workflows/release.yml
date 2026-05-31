@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write  # create GitHub Release
+  id-token: write  # OIDC token for npm trusted publishing
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+          cache: pnpm
+
+      # OIDC-based trusted publishing requires npm >= 9.5.0; pin to latest for provenance support.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Verify tag matches package.json version
+        id: version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          echo "pkg=$PKG_VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "::error::Tag '$GITHUB_REF_NAME' ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Check version is not already published
+        id: check
+        run: |
+          PKG_NAME="$(node -p "require('./package.json').name")"
+          VERSION="${{ steps.version.outputs.pkg }}"
+          if npm view "$PKG_NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::$PKG_NAME@$VERSION is already published — skipping publish and release."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.check.outputs.already == 'false'
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        if: steps.check.outputs.already == 'false'
+        run: pnpm build
+
+      - name: Publish to npm (OIDC / trusted publishing)
+        if: steps.check.outputs.already == 'false'
+        run: npm publish --provenance --access public --ignore-scripts
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.already == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
