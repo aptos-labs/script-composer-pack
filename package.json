@@ -3,12 +3,15 @@
   "collaborators": [
     "Aptos Labs <opensource@aptoslabs.com>"
   ],
-  "description": "Generating Move Script from composer",
+  "description": "Self-contained WASM bundle for building batched Aptos Move script payloads via the dynamic transaction composer.",
   "version": "0.2.4",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aptos-labs/aptos-core"
+    "url": "git+https://github.com/aptos-labs/script-composer-pack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aptos-labs/script-composer-pack/issues"
   },
   "files": [
     "dist",
@@ -19,7 +22,7 @@
   "main": "dist/cjs/main.js",
   "module": "dist/esm/main.mjs",
   "types": "dist/main.d.ts",
-  "homepage": "https://aptoslabs.com",
+  "homepage": "https://github.com/aptos-labs/script-composer-pack#readme",
   "sideEffects": [
     "./snippets/*"
   ],
