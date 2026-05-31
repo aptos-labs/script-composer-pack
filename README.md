@@ -1,90 +1,131 @@
 # @aptos-labs/script-composer-pack
 
-Generate Move script payload helpers from `@aptos-labs/aptos-dynamic-transaction-composer`.
+Build batched Aptos Move script payloads using the
+[dynamic transaction composer](https://github.com/aptos-labs/aptos-dynamic-transaction-composer)
+— with the WASM **pre-bundled and base64-inlined**, so no network fetch or manual asset loading
+is required at runtime.
 
-## Requirements
+## Compatibility
 
-- Node.js 18+
-- pnpm
+| Peer dependency | Supported range |
+|---|---|
+| `@aptos-labs/ts-sdk` | `^3.0.0 \|\| ^4.0.0 \|\| ^5.0.0 \|\| ^6.0.0 \|\| ^7.0.0` |
+| `@aptos-labs/aptos-dynamic-transaction-composer` | `^0.1.7` |
+
+Node.js 18+ required.
 
 ## Install
 
 ```bash
+# pnpm
+pnpm add @aptos-labs/script-composer-pack \
+     @aptos-labs/aptos-dynamic-transaction-composer \
+     @aptos-labs/ts-sdk
+
+# npm
+npm install @aptos-labs/script-composer-pack \
+            @aptos-labs/aptos-dynamic-transaction-composer \
+            @aptos-labs/ts-sdk
+
+# yarn
+yarn add @aptos-labs/script-composer-pack \
+         @aptos-labs/aptos-dynamic-transaction-composer \
+         @aptos-labs/ts-sdk
+```
+
+Both peer dependencies must be installed by the consumer.
+
+## Usage
+
+```ts
+import {
+  initSync,
+  wasmModule,
+  TransactionComposer,
+  CallArgument,
+} from "@aptos-labs/script-composer-pack";
+import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
+import { BCS } from "@aptos-labs/ts-sdk";
+
+// Initialize the bundled WASM once at startup — no network fetch needed.
+initSync({ module: wasmModule });
+
+// Build a batched script that calls two Move functions in sequence.
+const composer = TransactionComposer.single_signer();
+
+// First call: withdraw coins from the signer's account.
+const amountBcs = BCS.bcsSerializeUint64(100_000_000n);
+const [withdrawnCoin] = composer.add_batched_call(
+  "0x1::coin",
+  "withdraw",
+  ["0x1::aptos_coin::AptosCoin"],
+  [CallArgument.newSigner(0), CallArgument.newBytes(amountBcs)],
+);
+
+// Second call: deposit the returned value from the first call.
+const recipientBcs = /* BCS-encoded AccountAddress */ new Uint8Array(32);
+composer.add_batched_call(
+  "0x1::coin",
+  "deposit",
+  ["0x1::aptos_coin::AptosCoin"],
+  [CallArgument.newBytes(recipientBcs), withdrawnCoin],
+);
+
+// Serialize into a Move script payload (Uint8Array).
+const scriptPayload = composer.generate_batched_calls(/* with_metadata */ true);
+
+// Hand scriptPayload to @aptos-labs/ts-sdk to build and submit a script transaction.
+```
+
+To decompile a serialized script back into its function calls (useful for display or auditing):
+
+```ts
+import { generate_batched_call_payload_wasm } from "@aptos-labs/script-composer-pack";
+
+const calls = generate_batched_call_payload_wasm(scriptPayload); // MoveFunctionCall[]
+```
+
+## API
+
+| Export | Description |
+|---|---|
+| `initSync({ module })` | Initialize the bundled WASM module synchronously. Call once before any other API. |
+| `wasmModule` | Pre-compiled `WebAssembly.Module` — pass directly to `initSync`. |
+| `TransactionComposer` | Core builder. Use `single_signer()` or `multi_signer(n)` to construct, then chain `add_batched_call(...)` calls, and finally `generate_batched_calls(withMetadata)` to serialize. |
+| `CallArgument` | Represents a call argument: `newSigner(idx)` for a signer, `newBytes(bytes)` for a BCS-encoded value, or the return value of a previous `add_batched_call`. |
+| `MoveFunctionCall` | Represents a single Move function call inside a deserialized script. |
+| `PreviousResult` | Internal: a return value from a prior `add_batched_call` that can be forwarded as an argument. |
+| `generate_batched_call_payload_wasm(script)` | Decompiles a serialized `Uint8Array` script into `MoveFunctionCall[]`. |
+
+## Development
+
+```bash
 pnpm install
-```
+pnpm build        # outputs CJS + ESM bundles to dist/
 
-## Build
-
-```bash
-pnpm build
-```
-
-## Version Bump CLI
-
-This repo includes a generic version bump CLI at `scripts/bump-version.mjs`.
-
-### Command
-
-```bash
-pnpm run version:bump -- <major|minor|patch|prerelease|X.Y.Z> [options]
-```
-
-`X.Y.Z` uses strict SemVer parsing and supports prerelease/build metadata,
-for example `1.4.0-rc.1` and `1.4.0+build.7`.
-
-### Options
-
-- `--file <path>`: target `package.json` (default: `./package.json`)
-- `--pre <id>`: prerelease id for `prerelease` action (default: `rc`)
-- `--dry-run`: preview only, no file changes
-
-### Examples
-
-```bash
-# bump patch version
-pnpm run version:bump -- patch
-
-# preview minor bump
-pnpm run version:bump -- minor --dry-run
-
-# set exact version
-pnpm run version:bump -- 1.4.0
-
-# create/increment prerelease
-pnpm run version:bump -- prerelease --pre beta
-
-# bump another package.json
-pnpm run version:bump -- patch --file ./packages/foo/package.json
-```
-
-## Recommended Upgrade Flow
-
-1. Pull latest `main`.
-2. Create a new branch for the release.
-3. Preview target version:
-
-```bash
+# Preview a version bump without writing
 pnpm run version:bump -- patch --dry-run
+
+# Apply a version bump
+pnpm run version:bump -- patch   # or minor / major / 1.2.3
 ```
 
-4. Apply version bump:
+## Release
+
+Releases are automated via GitHub Actions. After merging a version-bump PR:
 
 ```bash
-pnpm run version:bump -- patch
+git tag v<version>      # e.g. git tag v0.2.4
+git push origin v<version>
 ```
 
-5. Verify build:
+The [release workflow](.github/workflows/release.yml) verifies the tag matches
+`package.json`, checks the version hasn't been published yet, builds, publishes to npm via
+OIDC Trusted Publishing, and creates a GitHub Release.
 
-```bash
-pnpm build
-```
+**Prerequisite:** an npm Trusted Publisher must be configured on npmjs.com for this repository
+before pushing the first tag.
 
-6. Commit and push:
+## License
 
-```bash
-git add package.json
-git commit -m "chore: bump version to <new-version>"
-git push -u origin <your-branch>
-```
-
-7. Open PR.
+Apache-2.0 © [Aptos Labs](https://aptoslabs.com)
