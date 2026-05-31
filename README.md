@@ -5,6 +5,17 @@ Build batched Aptos Move script payloads using the
 — with the WASM **pre-bundled and base64-inlined**, so no network fetch or manual asset loading
 is required at runtime.
 
+## What this package does
+
+This package bundles the `@aptos-labs/aptos-dynamic-transaction-composer` WebAssembly module
+directly into JavaScript, eliminating the need for runtime WASM file loading or manual
+initialization. Call `initSync()` once, then use `TransactionComposer` to compose and serialize
+batched Move function calls into a script payload.
+
+**This is a low-level, zero-dependency binding.** For a higher-level SDK with transaction
+building, signing, and submission, see
+[`@aptos-labs/script-composer-sdk`](https://github.com/aptos-labs/script-composer-sdk).
+
 ## Compatibility
 
 | Peer dependency | Supported range |
