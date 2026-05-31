@@ -50,6 +50,9 @@
       }
     }
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
   "scripts": {
     "build": "npx tsup",
     "version:bump": "node ./scripts/bump-version.mjs",
