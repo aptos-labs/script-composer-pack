@@ -21,7 +21,7 @@ building, signing, and submission, see
 | Peer dependency | Supported range |
 |---|---|
 | `@aptos-labs/ts-sdk` | `^3.0.0 \|\| ^4.0.0 \|\| ^5.0.0 \|\| ^6.0.0 \|\| ^7.0.0` |
-| `@aptos-labs/aptos-dynamic-transaction-composer` | `^0.1.7` |
+| `@aptos-labs/aptos-dynamic-transaction-composer` | `^0.1.8` |
 
 Node.js 18+ required.
 
@@ -126,7 +126,7 @@ pnpm run version:bump -- patch   # or minor / major / 1.2.3
 Releases are automated via GitHub Actions. After merging a version-bump PR:
 
 ```bash
-git tag v<version>      # e.g. git tag v0.2.4
+git tag v<version>      # e.g. git tag v0.2.5
 git push origin v<version>
 ```
 
