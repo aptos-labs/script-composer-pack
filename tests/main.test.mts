@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	initSync,
-	TransactionComposer,
-	wasmModule,
-} from "../dist/esm/main.mjs";
+import { initSync, TransactionComposer, wasmModule } from "../main.mts";
 
 describe("script-composer-pack", () => {
 	it("exports the pre-bundled wasm module", () => {
