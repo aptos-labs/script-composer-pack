@@ -51,9 +51,9 @@
 		}
 	},
 	"scripts": {
-		"build": "rm -rf dist && rolldown -c && tsc -p tsconfig.declarations.json",
+		"build": "node ./scripts/clean-dist.mjs && rolldown -c && tsc -p tsconfig.declarations.json",
 		"lint": "biome check .",
-		"test": "vitest run",
+		"test": "vitest run --config vitest.config.mts",
 		"version:bump": "node ./scripts/bump-version.mjs",
 		"prepublishOnly": "pnpm build"
 	},
