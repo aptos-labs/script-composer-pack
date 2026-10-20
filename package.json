@@ -39,7 +39,7 @@
 		"rolldown": "1.0.2",
 		"semver": "7.7.4",
 		"typescript": "6.0.3",
-		"vite": "8.0.14",
+		"vite": "8.1.6",
 		"vitest": "4.1.7"
 	},
 	"exports": {
